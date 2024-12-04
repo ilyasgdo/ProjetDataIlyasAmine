@@ -6,7 +6,7 @@ url = "https://static.data.gouv.fr/resources/election-presidentielle-des-10-et-2
 
 # Chemin vers le dossier
 destination_directory = "data/raw"
-destination_file = os.path.join(destination_directory, "rawData.xlsx")
+destination_file = os.path.join(destination_directory, "rawdata.xlsx")
 
 os.makedirs(destination_directory, exist_ok=True)
 
