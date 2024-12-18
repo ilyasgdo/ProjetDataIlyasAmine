@@ -91,5 +91,5 @@ def clean_data_process(raw_path: str, cleaned_path: str, skip_rows: int)-> None:
 
 if __name__ == "__main__":
     # Processus de nettoyage pour chaque fichier
-    #clean_data_process(RAW_DATA_PATH_ELECTION, CLEANED_DATA_PATH_ELECTION, 0)
+    clean_data_process(RAW_DATA_PATH_ELECTION, CLEANED_DATA_PATH_ELECTION, 0)
     clean_data_process(RAW_DATA_PATH_SALAIRE, CLEANED_DATA_PATH_SALAIRE, 5)
