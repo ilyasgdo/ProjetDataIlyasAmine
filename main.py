@@ -8,8 +8,13 @@ from src.components.footer import create_footer
 from src.components.histogram import create_histogram
 from src.components.social_aid_histogram import  create_social_aid_histogram
 from src.components.histogram_salary_range import create_histogram_by_salary_range
+from src.components.bar_chart import generate_bar_chart
+from src.components.scatter_plot import generate_scatter_plot
+from src.components.line_chart import generate_line_chart
+from src.components.heatmap import generate_heatmap
 
 from dash import Input, Output
+
 
 CLEANED_DATA_PATH = os.path.join("data", "cleaned", "cleanedsalaire.xlsx")
 
@@ -27,6 +32,10 @@ app.layout = html.Div(children=[
     create_social_aid_histogram(df),  # Ajouter le graphique circulaire de l'indice de Gini
     create_histogram_by_salary_range(df),  # Ajouter l'histogramme par intervalle de salaires
     create_graph_layout(df),  # Ajouter le graphique
+    generate_bar_chart(df),
+    generate_scatter_plot(df),
+    generate_line_chart(df),
+    generate_heatmap(df),
     create_footer()  # Ajouter le Footer
 ])
 

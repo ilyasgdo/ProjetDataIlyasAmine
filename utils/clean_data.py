@@ -89,7 +89,12 @@ def clean_data_process(raw_path: str, cleaned_path: str, skip_rows: int)-> None:
         print(str(e))
         exit(1)
 
+def clean_all_raw_files() -> None:
+    if not os.path.isfile(CLEANED_DATA_PATH_ELECTION):
+            clean_data_process(RAW_DATA_PATH_ELECTION, CLEANED_DATA_PATH_ELECTION, 0)
+
+    if not os.path.isfile(CLEANED_DATA_PATH_SALAIRE):
+        clean_data_process(RAW_DATA_PATH_SALAIRE, CLEANED_DATA_PATH_SALAIRE, 5)
+    
 if __name__ == "__main__":
-    # Processus de nettoyage pour chaque fichier
-    clean_data_process(RAW_DATA_PATH_ELECTION, CLEANED_DATA_PATH_ELECTION, 0)
-    clean_data_process(RAW_DATA_PATH_SALAIRE, CLEANED_DATA_PATH_SALAIRE, 5)
+    clean_all_raw_files()

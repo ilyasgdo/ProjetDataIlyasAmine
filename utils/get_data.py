@@ -28,6 +28,14 @@ def download_data(url: str, destination_file: str) -> None :
         print(f"Erreur lors du téléchargement : {e}")
         exit(1)  
 
+def download_all_data() -> None:
+    
+    if not os.path.isfile(destination_file_election):
+        download_data(url_election, destination_file_election)
+    
+    if not os.path.isfile(destination_file_salaire):
+        download_data(url_salaire, destination_file_salaire)
+
+
 if __name__ == "__main__":
-    download_data(url_election, destination_file_election)
-    download_data(url_salaire, destination_file_salaire)
+    download_all_data()
