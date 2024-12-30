@@ -54,8 +54,8 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
     Returns:
         pd.DataFrame: Le DataFrame nettoyé.
     """
-    
-    
+  
+
     return df.dropna()
 
 def save_data(df: pd.DataFrame, file_path: str)-> None:

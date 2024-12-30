@@ -3,15 +3,15 @@ import plotly.express as px
 import pandas as pd
 from dash import dcc
 
-def generate_scatter_plot(df: pd.DataFrame) -> dcc.Graph:
+def generate_scatter_plot(filtered_df: pd.DataFrame, x_type: str, y_type: str) -> dcc.Graph:
     fig = px.scatter(
-        df,
-        x="DEC_MED18",
-        y="DEC_GI18",
+        filtered_df,
+        x=x_type,
+        y=y_type,
         color="LIBCOM",
         size="DEC_Q318",
         hover_name="LIBIRIS",
-        title="Relation entre le salaire médian et l'indice de Gini",
-        labels={"DEC_MED18": "Salaire Médian (€)", "DEC_GI18": "Indice de Gini", "DEC_Q318": "Quantile Q3"}
+        title=f"Relation entre {x_type} et {y_type}",
+        labels={x_type: x_type, y_type: y_type}
     )
-    return dcc.Graph(figure=fig)
+    return dcc.Graph(id="scatter-plot", figure=fig)
