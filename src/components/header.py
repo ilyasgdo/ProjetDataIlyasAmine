@@ -1,13 +1,36 @@
 from dash import html
+import dash_bootstrap_components as dbc
 
+def create_header() -> html.Header:
+    """
+    Crée un en-tête stylisé pour l'application avec Dash Bootstrap Components.
 
-def create_header():
-    """Retourne un header simple pour l'application."""
+    Returns:
+        html.Header: Un en-tête HTML stylisé contenant le titre de l'application.
+    """
     return html.Header(
-        children=[
-            html.H1(
-                "Bienvenue sur la Visualisation des Salaires Médians et Indice de Gini dans l'ile de france",
-                style={"textAlign": "center", "color": "#333"},
-            ),
-        ]
+        dbc.Container(
+            fluid=True,
+            children=[
+                dbc.Row(
+                    dbc.Col(
+                        html.H1(
+                            "Visualisation des Salaires Médians et Indice de Gini - Île-de-France",
+                            className="text-center my-4 text-primary",
+                        ),
+                        width={"size": 8, "offset": 2},  # Centrer le texte dans une colonne
+                    ),
+                ),
+                dbc.Row(
+                    dbc.Col(
+                        html.P(
+                            "Une application pour explorer les inégalités et les salaires médians par commune.",
+                            className="text-center text-muted mb-0",
+                        ),
+                        width={"size": 8, "offset": 2},
+                    ),
+                ),
+            ],
+            className="bg-light p-4 shadow-sm",  # Fond clair avec une ombre subtile
+        )
     )

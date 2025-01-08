@@ -1,40 +1,44 @@
+import dash_bootstrap_components as dbc
 from dash import html, dcc
 
 
-def create_navbar():
-    """Retourne une barre de navigation simple."""
-    return html.Nav(
+def create_navbar() -> dbc.Navbar:
+    """
+    Crée une barre de navigation stylisée avec Bootstrap pour l'application.
+
+    Returns:
+        dbc.Navbar: Une barre de navigation réactive et élégante.
+    """
+    # Élément de navigation
+    navbar = dbc.Navbar(
+        color="primary",
+        dark=True,
         children=[
-            html.Ul(
-                children=[
-                    html.Li(
-                        dcc.Link(
-                            "Accueil",
-                            href="/",
-                            style={"padding": "10px", "textDecoration": "none"},
-                        )
+            dbc.Container(
+                [
+                    dbc.NavbarBrand(
+                        "Visualisation IDF",
+                        href="/",
+                        className="ms-3",
+                        style={"fontWeight": "bold", "fontSize": "1.5rem"},
                     ),
-                    html.Li(
-                        dcc.Link(
-                            "Graphiques",
-                            href="#graph",
-                            style={"padding": "10px", "textDecoration": "none"},
-                        )
-                    ),
-                    html.Li(
-                        dcc.Link(
-                            "À propos",
-                            href="#about",
-                            style={"padding": "10px", "textDecoration": "none"},
-                        )
+                    dbc.Nav(
+                        [
+                            dbc.NavItem(
+                                dbc.NavLink("Accueil", href="/", active=True)
+                            ),
+                            dbc.NavItem(
+                                dbc.NavLink("Graphiques", href="#graph")
+                            ),
+                            dbc.NavItem(
+                                dbc.NavLink("À propos", href="#about")
+                            ),
+                        ],
+                        className="ms-auto",
                     ),
                 ],
-                style={
-                    "listStyleType": "none",
-                    "display": "flex",
-                    "justifyContent": "center",
-                    "backgroundColor": "#f8f9fa",
-                },
+                fluid=True,
             )
-        ]
+        ],
     )
+    return navbar
