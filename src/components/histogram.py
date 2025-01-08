@@ -10,7 +10,7 @@ def create_histogram(df):
         x="DEC_MED18",
         title="Distribution des Salaires Médians",
         labels={"DEC_MED18": "Salaire Médian (€)"},
-        nbins=10,
+        nbins=30,
     )
     fig.update_layout(bargap=0.1)
 

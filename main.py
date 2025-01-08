@@ -1,7 +1,7 @@
-from dash import Dash, html, Input, Output, dcc  # Ajout de dcc pour les filtres
+from typing import Optional
+from dash import Dash, html, Input, Output, dcc
 import pandas as pd
 import os
-import re
 
 from src.components.graph1 import create_graph_layout, update_graph
 from src.components.header import create_header
@@ -10,113 +10,123 @@ from src.components.footer import create_footer
 from src.components.histogram import create_histogram
 from src.components.social_aid_histogram import create_social_aid_histogram
 from src.components.histogram_salary_range import create_histogram_by_salary_range
-from src.components.bar_chart import generate_bar_chart
-from src.components.scatter_plot import generate_scatter_plot
-from src.components.line_chart import generate_line_chart
 from src.components.heatmap import generate_heatmap
-from src.components.filters import generate_filters
+from src.components.pie_chart import create_pie_chart_component
 from utils.get_data import download_all_data
 from utils.clean_data import clean_all_raw_files
 from utils.normalise_name import normalize_name
 
+# --- Définition des chemins vers les fichiers ---
 
-# Chemin vers le fichier Excel contenant les données
 CLEANED_DATA_PATH_SALAIRE = os.path.join("data", "cleaned", "cleanedsalaire.xlsx")
 CLEANED_DATA_PATH_COMMUNES_IDF = os.path.join(
-    "data/cleaned", "cleanedcommunesiledefrance.xlsx"
+    "data", "cleaned", "cleanedcommunesiledefrance.xlsx"
 )
 
-# telecharge les données si elles ne sont pas présentes
-download_all_data()
+# --- Téléchargement et nettoyage des données si nécessaire ---
 
-# nettoye tout les fichiers brut si ils ne sont pas présents dans cleaned
+download_all_data()
 clean_all_raw_files()
 
+# --- Chargement et filtrage des données ---
 
-# Charger la liste des villes à partir du fichier Excel
 villes_idf_df = pd.read_excel(CLEANED_DATA_PATH_COMMUNES_IDF)
 villes_idf = (
     villes_idf_df.iloc[:, 0].apply(normalize_name).tolist()
-)  # Normaliser les noms de villes
+)
 
-# Charger le fichier des statistiques à partir d'Excel
 df_salaire = pd.read_excel(CLEANED_DATA_PATH_SALAIRE)
-
-# Ajouter une colonne normalisée pour la comparaison
 df_salaire["LIBCOM_normalized"] = df_salaire["LIBCOM"].apply(normalize_name)
+df_filtre_IDF = df_salaire[df_salaire["LIBCOM_normalized"].isin(villes_idf)].sort_values(by="LIBCOM")
+df_filtre_IDF = df_filtre_IDF.drop(columns=["LIBCOM_normalized"])
 
-# Filtrer les lignes où la colonne normalisée est dans la liste des villes d'Île-de-France
-df_filtre_IDF = df_salaire[df_salaire["LIBCOM_normalized"].isin(villes_idf)]
+# --- Initialisation de l'application Dash ---
 
-# Trier les résultats par la colonne d'origine 'LIBCOM'
-df_filtre_IDF = df_filtre_IDF.sort_values(by="LIBCOM")
-
-# Supprimer la colonne temporaire avant affichage ou sauvegarde
-CLEANED_DATA_PATH_SALAIRE = os.path.join("data", "cleaned", "temp.xlsx")
-
-# Afficher le résultat
-df_filtre_IDF.to_excel(CLEANED_DATA_PATH_SALAIRE, index=False)
-
-
-# Charger les données à partir du fichier Excel
-
-
-# Initialisation de l'application Dash
 app = Dash(__name__)
 
-# Définir la mise en page de l'application
+# --- Définir la mise en page de l'application ---
+
 app.layout = html.Div(
     children=[
-        create_header(),  # Ajouter le Header
-        create_navbar(),  # Ajouter la Navbar
-        # Ajout des filtres
-        generate_filters(df_filtre_IDF),
-        # Conteneur pour les graphiques
-        html.Div(id="graph-container"),
-        # Ajouter des graphiques statiques
-        create_histogram(df_filtre_IDF),  # Histogramme des salaires médians
-        create_social_aid_histogram(
-            df_filtre_IDF
-        ),  # Graphique circulaire de l'indice de Gini
-        create_histogram_by_salary_range(
-            df_filtre_IDF
-        ),  # Histogramme par intervalle de salaires
-        create_graph_layout(df_filtre_IDF),  # Graphique de base
-        generate_heatmap(df_filtre_IDF),
-        generate_line_chart(df_filtre_IDF),
-        create_footer(),  # Ajouter le Footer
-    ]
+        create_header(),
+        create_navbar(),
+        html.Div(
+            children=[
+                create_pie_chart_component(app, df_filtre_IDF),
+                html.Div(
+                    children=[
+                        html.Div(
+                            children=[
+                                create_histogram(df_filtre_IDF),
+                                create_social_aid_histogram(df_filtre_IDF),
+                            ],
+                            style={
+                                "display": "flex",
+                                "justifyContent": "space-between",
+                                "gap": "20px",
+                                "marginBottom": "20px",
+                            },
+                        ),
+                        html.Div(
+                            children=[
+                                create_histogram_by_salary_range(df_filtre_IDF),
+                                generate_heatmap(df_filtre_IDF),
+                            ],
+                            style={
+                                "display": "flex",
+                                "justifyContent": "space-between",
+                                "gap": "20px",
+                            },
+                        ),
+                    ],
+                    style={
+                        "display": "flex",
+                        "flexDirection": "column",
+                        "width": "100%",
+                    },
+                ),
+                create_graph_layout(df_filtre_IDF),
+            ],
+            style={
+                "display": "flex",
+                "flexDirection": "column",
+                "alignItems": "center",
+                "backgroundColor": "#f4f4f4",
+                "padding": "20px",
+                "borderRadius": "10px",
+                "boxShadow": "0px 4px 10px rgba(0, 0, 0, 0.1)",
+                "maxWidth": "1200px",
+                "margin": "0 auto",
+            },
+        ),
+        create_footer(),
+    ],
+    style={
+        "fontFamily": "Arial, sans-serif",
+        "padding": "20px",
+        "backgroundColor": "#ffffff",
+    },
 )
 
+# --- Callback pour mettre à jour le graphique et les textes ---
 
-# Callback pour mettre à jour les graphiques en fonction des sélections
 @app.callback(
-    Output("graph-container", "children"),
-    [Input("region-selector", "value"), Input("data-type-selector", "value")],
-)
-def update_graphs(selected_region, selected_data_type):
-    # Filtrer les données en fonction de la région sélectionnée
-    filtered_df = (
-        df_filtre_IDF
-        if not selected_region
-        else df_filtre_IDF[df_filtre_IDF["LIBCOM"] == selected_region]
-    )
-
-    # Générer les graphiques en fonction du type de données sélectionné
-    bar_chart = generate_bar_chart(filtered_df, selected_data_type)
-    scatter_plot = generate_scatter_plot(filtered_df, "DEC_MED18", "DEC_GI18")
-    line_chart = generate_line_chart(filtered_df, selected_data_type)
-    heatmap = generate_heatmap(filtered_df, selected_data_type)
-
-    # Retourner les graphiques
-    return html.Div([bar_chart, scatter_plot, line_chart, heatmap])
-
-
-# Callback pour mettre à jour le graphique et les textes
-app.callback(
     [Output("salaire-gini-graph", "figure"), Output("iris-info", "children")],
     [Input("ville-selector", "value")],
-)(update_graph)
+)
+def update_callback(ville: Optional[str]) -> tuple:
+    """
+    Met à jour le graphique et les informations textuelles en fonction de la ville sélectionnée.
 
+    Args:
+        ville (Optional[str]): La ville sélectionnée dans le menu déroulant.
+
+    Returns:
+        tuple: Le graphique mis à jour et le texte d'informations.
+    """
+    return update_graph(ville)
+
+
+# --- Exécution de l'application ---
 if __name__ == "__main__":
     app.run(host="localhost", port=7999, debug=True)
