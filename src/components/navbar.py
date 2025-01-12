@@ -1,5 +1,4 @@
 import dash_bootstrap_components as dbc
-from dash import html, dcc
 
 
 def create_navbar() -> dbc.Navbar:

@@ -4,4 +4,4 @@ plotly
 requests
 asyncio
 aiohttp
-concurrent.futures
+dash_bootstrap_components

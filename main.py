@@ -1,5 +1,5 @@
 from typing import Optional
-from dash import Dash, html, Input, Output, dcc
+from dash import Dash, Input, Output
 import dash_bootstrap_components as dbc  
 import pandas as pd
 import os
@@ -9,10 +9,12 @@ from src.components.header import create_header
 from src.components.navbar import create_navbar
 from src.components.footer import create_footer
 from src.components.histogram import create_histogram
-from src.components.social_aid_histogram import create_social_aid_histogram
 from src.components.histogram_salary_range import create_histogram_by_salary_range
-from src.components.heatmap import generate_heatmap
+from src.components.heatmap_chomage import generate_heatmap_chomage
+from src.components.heatmap_revenu_non_activite import generate_heatmap_revenu_non_salarie
+from src.components.heatmap_retraite import generate_heatmap_retraite
 from src.components.pie_chart import create_pie_chart_component
+from src.components.scatter_plot_dynamique import create_dynamic_scatter_plot
 from utils.get_data import download_all_data
 from utils.clean_data import clean_all_raw_files
 from utils.normalise_name import normalize_name
@@ -52,25 +54,43 @@ app.layout = dbc.Container(
         dbc.Container(
             fluid=False,
             children=[
-                create_pie_chart_component(app, df_filtre_IDF),  # Graphique circulaire
+                create_pie_chart_component(app, df_filtre_IDF),  
                 dbc.Row(
                     [
-                        # Première rangée : Histogramme et graphique d'aide sociale
+                        # Histogramme tranche de 10k et 2,5k
                         dbc.Col(create_histogram(df_filtre_IDF), width=6, className="mb-4"),
-                        dbc.Col(create_social_aid_histogram(df_filtre_IDF), width=6, className="mb-4"),
+                        dbc.Col(create_histogram_by_salary_range(df_filtre_IDF), width=6, className="mb-4"),
                     ],
                     className="mb-4",
                 ),
                 dbc.Row(
                     [
-                        # Deuxième rangée : Histogramme par salaires et carte thermique
-                        dbc.Col(create_histogram_by_salary_range(df_filtre_IDF), width=6, className="mb-4"),
-                        dbc.Col(generate_heatmap(df_filtre_IDF), width=6, className="mb-4"),
+                        # carte thermique chomage te retraite
+                        
+                        dbc.Col(generate_heatmap_chomage(df_filtre_IDF), width=6, className="mb-4"),
+                        dbc.Col(generate_heatmap_retraite(df_filtre_IDF), width=6, className="mb-4"),
+
+                    ],
+                    className="mb-4",
+                ),
+                dbc.Row(
+                    [
+                        # carte thermique revenue non salarie
+                        
+                        dbc.Col(generate_heatmap_revenu_non_salarie(df_filtre_IDF), width=6, className="mb-4"),
+
                     ],
                     className="mb-4",
                 ),
                 dbc.Row(
                     dbc.Col(create_graph_layout(df_filtre_IDF), width=12, className="mb-4"),
+                ),
+                 # Nouvelle rangée : Graphiques dynamiques
+                dbc.Row(
+                    [
+                        create_dynamic_scatter_plot(app, df_filtre_IDF),
+                    ],
+                    className="mb-4",
                 ),
             ],
             style={

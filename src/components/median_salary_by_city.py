@@ -1,4 +1,4 @@
-from dash import html, dcc, Input, Output
+from dash import html, dcc
 import plotly.express as px
 import pandas as pd
 import os

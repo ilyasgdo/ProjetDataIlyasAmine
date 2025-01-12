@@ -42,7 +42,7 @@ def create_histogram_by_salary_range(df: pd.DataFrame) -> html.Div:
 
     fig.update_layout(
         title={
-            "text": "Nombre de Villes par Intervalle de Salaires Médians",
+            "text": "",
             "x": 0.5,
             "xanchor": "center",
             "font": {"size": 20, "family": "Arial, sans-serif", "color": "#2c3e50"},
@@ -67,7 +67,7 @@ def create_histogram_by_salary_range(df: pd.DataFrame) -> html.Div:
     return html.Div(
         children=[
             html.H3(
-                "Histogramme des Villes par Intervalle de Salaires Médians",
+                "Nombre de Villes par Intervalle de Salaires Médians en IDF tranche 2500e",
                 style={
                     "text-align": "center",
                     "color": "#2c3e50",

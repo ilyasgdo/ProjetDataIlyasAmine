@@ -1,6 +1,6 @@
 import os
 import pandas as pd
-from typing import Any
+
 
 # Chemins des fichiers bruts
 RAW_DATA_PATH_ELECTION = os.path.join("data/raw", "rawdataelection.xlsx")
