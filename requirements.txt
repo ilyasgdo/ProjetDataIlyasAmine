@@ -5,3 +5,5 @@ requests
 asyncio
 aiohttp
 dash_bootstrap_components
+re
+unicodedata

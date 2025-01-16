@@ -121,4 +121,4 @@ def update_callback(ville: Optional[str]) -> tuple:
 
 # Exécution 
 if __name__ == "__main__":
-    app.run(host="localhost", port=7999, debug=True)
+    app.run(host="localhost", port=7999, debug=False)
