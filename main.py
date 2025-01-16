@@ -14,23 +14,26 @@ from src.components.heatmap_chomage import generate_heatmap_chomage
 from src.components.heatmap_revenu_non_activite import generate_heatmap_revenu_non_salarie
 from src.components.heatmap_retraite import generate_heatmap_retraite
 from src.components.pie_chart import create_pie_chart_component
-from src.components.scatter_plot_dynamique import create_dynamic_scatter_plot
 from utils.get_data import download_all_data
 from utils.clean_data import clean_all_raw_files
 from utils.normalise_name import normalize_name
 
-# --- Configuration des chemins vers les fichiers ---
+#  Configuration des chemins vers les fichiers 
 
 CLEANED_DATA_PATH_SALAIRE = os.path.join("data", "cleaned", "cleanedsalaire.xlsx")
 CLEANED_DATA_PATH_COMMUNES_IDF = os.path.join(
     "data", "cleaned", "cleanedcommunesiledefrance.xlsx"
 )
 
-# --- Téléchargement et nettoyage des données si nécessaire ---
+
+# Télécharger les fichiers bruts s'ils n'existent pas
 download_all_data()
+
+# Nettoyer les fichiers bruts s'ils n'existent pas
 clean_all_raw_files()
 
-# --- Chargement et filtrage des données ---
+
+# Chargement et filtrage des données 
 
 # Charger la liste des villes et normaliser leurs noms
 villes_idf_df = pd.read_excel(CLEANED_DATA_PATH_COMMUNES_IDF)
@@ -42,10 +45,10 @@ df_salaire["LIBCOM_normalized"] = df_salaire["LIBCOM"].apply(normalize_name)
 df_filtre_IDF = df_salaire[df_salaire["LIBCOM_normalized"].isin(villes_idf)].sort_values(by="LIBCOM")
 df_filtre_IDF = df_filtre_IDF.drop(columns=["LIBCOM_normalized"])
 
-# --- Initialisation de l'application Dash avec Bootstrap ---
+# Initialisation de l'application Dash avec Bootstrap 
 app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 
-# --- Mise en page principale de l'application ---
+#  Mise en page principale de l'application 
 app.layout = dbc.Container(
     fluid=True,
     children=[
@@ -85,13 +88,6 @@ app.layout = dbc.Container(
                 dbc.Row(
                     dbc.Col(create_graph_layout(df_filtre_IDF), width=12, className="mb-4"),
                 ),
-                 # Nouvelle rangée : Graphiques dynamiques
-                dbc.Row(
-                    [
-                        create_dynamic_scatter_plot(app, df_filtre_IDF),
-                    ],
-                    className="mb-4",
-                ),
             ],
             style={
                 "backgroundColor": "#f4f4f4",
@@ -100,29 +96,29 @@ app.layout = dbc.Container(
                 "boxShadow": "0px 4px 10px rgba(0, 0, 0, 0.1)",
             },
         ),
-        create_footer(),  # Pied de page
+        create_footer(),  
     ],
     style={"fontFamily": "Arial, sans-serif", "paddingTop": "20px"},
 )
 
-# --- Callback pour mettre à jour le graphique et les textes ---
+# Callback pour mettre à jour le graphique et les textes 
 @app.callback(
     [Output("salaire-gini-graph", "figure"), Output("iris-info", "children")],
     [Input("ville-selector", "value")],
 )
 def update_callback(ville: Optional[str]) -> tuple:
     """
-    Met à jour le graphique et les informations textuelles en fonction de la ville sélectionnée.
+    Met à jour le graphique et les informations textuelles en fonction de la ville sélectionnée
 
     Args:
-        ville (Optional[str]): La ville sélectionnée dans le menu déroulant.
+        ville (Optional[str]): La ville sélectionnée dans le menu déroulant
 
     Returns:
-        tuple: Le graphique mis à jour et le texte d'informations.
+        tuple: Le graphique mis à jour et le texte d'informations
     """
     return update_graph(ville)
 
 
-# --- Exécution de l'application ---
+# Exécution 
 if __name__ == "__main__":
     app.run(host="localhost", port=7999, debug=True)

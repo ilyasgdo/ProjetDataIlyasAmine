@@ -1,8 +1,6 @@
 import os
 import requests
 
-# URLs des fichiers à télécharger
-URL_ELECTION = "https://static.data.gouv.fr/resources/election-presidentielle-des-10-et-24-avril-2022-resultats-definitifs-du-1er-tour/20220414-152612/resultats-par-niveau-burvot-t1-france-entiere.xlsx"
 URL_SALAIRE = "https://www.insee.fr/fr/statistiques/fichier/5055909/BASE_TD_FILO_DEC_IRIS_2018.xlsx"
 URL_COMMUNES_ILE_DE_FRANCE = (
     "https://www.data.gouv.fr/fr/datasets/r/91c0bdc4-0a5b-4ac8-950e-64a1ec207957"
@@ -10,7 +8,6 @@ URL_COMMUNES_ILE_DE_FRANCE = (
 
 # Répertoires et fichiers de destination
 DESTINATION_DIRECTORY = "data/raw"
-DESTINATION_FILE_ELECTION = os.path.join(DESTINATION_DIRECTORY, "rawdataelection.xlsx")
 DESTINATION_FILE_SALAIRE = os.path.join(DESTINATION_DIRECTORY, "rawdatasalaire.xlsx")
 DESTINATION_FILE_COMMUNES_ILE_DE_FRANCE = os.path.join(
     DESTINATION_DIRECTORY, "rawdatacommunesiledefrance.csv"
@@ -20,7 +17,7 @@ DESTINATION_FILE_COMMUNES_ILE_DE_FRANCE = os.path.join(
 os.makedirs(DESTINATION_DIRECTORY, exist_ok=True)
 
 
-def download_data(url: str, destination_file: str) -> None:
+def download_data(url: str, destination_file: str) -> bool:
     """
     Télécharge les données depuis une URL vers un fichier local.
 
@@ -28,8 +25,8 @@ def download_data(url: str, destination_file: str) -> None:
         url (str): URL du fichier à télécharger.
         destination_file (str): Chemin complet du fichier de destination.
 
-    Raises:
-        SystemExit: Si une erreur survient lors du téléchargement.
+    Returns:
+        bool: True si le téléchargement a réussi, False sinon.
     """
     try:
         response = requests.get(url, stream=True)
@@ -41,26 +38,40 @@ def download_data(url: str, destination_file: str) -> None:
                     file.write(chunk)
 
         print(f"Fichier téléchargé avec succès dans : {destination_file}")
+        return True
 
     except requests.exceptions.RequestException as e:
-        print(f"Erreur lors du téléchargement : {e}")
-        exit(1)
+        print(f"Erreur lors du téléchargement de {url} : {e}")
+        return False
+
+
+def is_file_valid(file_path: str) -> bool:
+    """
+    Vérifie si un fichier existe et n'est pas vide.
+
+    Args:
+        file_path (str): Chemin du fichier à vérifier.
+
+    Returns:
+        bool: True si le fichier existe et n'est pas vide, False sinon.
+    """
+    return os.path.isfile(file_path) and os.path.getsize(file_path) > 0
 
 
 def download_all_data() -> None:
     """
-    Télécharge tous les fichiers de données si ils n'existent pas déjà localement.
+    Télécharge tous les fichiers de données si ils n'existent pas déjà localement ou s'ils sont vides.
     """
-    if not os.path.isfile(DESTINATION_FILE_ELECTION):
-        download_data(URL_ELECTION, DESTINATION_FILE_ELECTION)
+    # Télécharger les fichiers uniquement s'ils n'existent pas ou sont vides
+    if not is_file_valid(DESTINATION_FILE_SALAIRE):
+        print("Téléchargement du fichier des salaires...")
+        if not download_data(URL_SALAIRE, DESTINATION_FILE_SALAIRE):
+            print("Échec du téléchargement du fichier des salaires.")
 
-    if not os.path.isfile(DESTINATION_FILE_SALAIRE):
-        download_data(URL_SALAIRE, DESTINATION_FILE_SALAIRE)
-
-    if not os.path.isfile(DESTINATION_FILE_COMMUNES_ILE_DE_FRANCE):
-        download_data(
-            URL_COMMUNES_ILE_DE_FRANCE, DESTINATION_FILE_COMMUNES_ILE_DE_FRANCE
-        )
+    if not is_file_valid(DESTINATION_FILE_COMMUNES_ILE_DE_FRANCE):
+        print("Téléchargement du fichier des communes d'Île-de-France...")
+        if not download_data(URL_COMMUNES_ILE_DE_FRANCE, DESTINATION_FILE_COMMUNES_ILE_DE_FRANCE):
+            print("Échec du téléchargement du fichier des communes d'Île-de-France.")
 
 
 if __name__ == "__main__":

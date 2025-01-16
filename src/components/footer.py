@@ -15,7 +15,7 @@ def create_footer() -> html.Footer:
                 dbc.Row(
                     dbc.Col(
                         html.P(
-                            "© 2024 Ilyas Amine - Tous droits réservés",
+                            "© 2025 Ilyas Amine ",
                             className="text-center text-muted my-3",
                         ),
                         width=12,  # S'étend sur toute la largeur

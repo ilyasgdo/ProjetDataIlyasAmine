@@ -10,7 +10,6 @@ RAW_DATA_PATH_COMMUNES_ILE_DE_FRANCE = os.path.join(
 )
 
 # Chemins des fichiers nettoyés
-CLEANED_DATA_PATH_ELECTION = os.path.join("data/cleaned", "cleanedelection.xlsx")
 CLEANED_DATA_PATH_SALAIRE = os.path.join("data/cleaned", "cleanedsalaire.xlsx")
 CLEANED_DATA_PATH_COMMUNES_ILE_DE_FRANCE = os.path.join(
     "data/cleaned", "cleanedcommunesiledefrance.xlsx"
@@ -125,8 +124,6 @@ def clean_all_raw_files() -> None:
     """
     Nettoie tous les fichiers de données brutes et sauvegarde les résultats nettoyés.
     """
-    if not os.path.isfile(CLEANED_DATA_PATH_ELECTION):
-        clean_data_process(RAW_DATA_PATH_ELECTION, CLEANED_DATA_PATH_ELECTION, 0)
 
     if not os.path.isfile(CLEANED_DATA_PATH_SALAIRE):
         clean_data_process(RAW_DATA_PATH_SALAIRE, CLEANED_DATA_PATH_SALAIRE, 5)

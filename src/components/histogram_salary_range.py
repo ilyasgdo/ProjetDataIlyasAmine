@@ -7,19 +7,18 @@ from dash import html, dcc
 
 def create_histogram_by_salary_range(df: pd.DataFrame) -> html.Div:
     """
-    Crée un histogramme des villes par intervalle de salaires médians.
+    Crée un histogramme des villes par intervalle de salaires médians
 
     Args:
-        df (pd.DataFrame): Les données contenant les salaires médians par ville.
+        df (pd.DataFrame): Les données 
 
     Returns:
-        html.Div: Un composant contenant le graphique et son titre.
+        html.Div: Un composant contenant le graphique 
     """
-    # Vérification des colonnes nécessaires
     if "DEC_MED18" not in df.columns:
-        raise ValueError("La colonne 'DEC_MED18' est absente des données.")
+        raise ValueError("La colonne 'DEC_MED18' est absente des données")
 
-    # Création des intervalles de salaires (de 0 à 5000, 5000 à 10000, etc.)
+    # Création des intervalles de salaires (
     max_salary = int(df["DEC_MED18"].max())
     bins = list(range(0, max_salary + 2500, 2500))
     labels = [f"{x}-{x+2500}" for x in bins[:-1]]
@@ -35,7 +34,8 @@ def create_histogram_by_salary_range(df: pd.DataFrame) -> html.Div:
             go.Bar(
                 x=salary_counts.index,
                 y=salary_counts.values,
-                marker=dict(color="#3498db"),  # Bleu élégant
+                marker=dict(color="#3498db"),
+                  
             )
         ]
     )
@@ -58,8 +58,8 @@ def create_histogram_by_salary_range(df: pd.DataFrame) -> html.Div:
             title_font={"size": 16, "family": "Arial, sans-serif"},
             tickfont={"size": 14, "family": "Arial, sans-serif"},
         ),
-        plot_bgcolor="#f8f9fa",  # Couleur d'arrière-plan du graphique
-        paper_bgcolor="white",  # Couleur d'arrière-plan globale
+        plot_bgcolor="#f8f9fa",  
+        paper_bgcolor="white",  
         margin=dict(l=40, r=40, t=60, b=40),
     )
 
@@ -67,7 +67,7 @@ def create_histogram_by_salary_range(df: pd.DataFrame) -> html.Div:
     return html.Div(
         children=[
             html.H3(
-                "Nombre de Villes par Intervalle de Salaires Médians en IDF tranche 2500e",
+                "Nombre de Villes par Intervalle de Salaires Médians en IDF tranche 2500€",
                 style={
                     "text-align": "center",
                     "color": "#2c3e50",
@@ -75,6 +75,15 @@ def create_histogram_by_salary_range(df: pd.DataFrame) -> html.Div:
                 },
             ),
             dcc.Graph(figure=fig),
+            html.H4(
+                "Le graphique montre que les villes avec un salaire médian compris entre 20 000€ "
+                "et 35 000€",
+                style={
+                    "textAlign": "center",
+                    "color": "#2c3e50",
+                    "marginBottom": "20px",
+                },
+            )
         ],
         style={
             "padding": "20px",
@@ -84,4 +93,5 @@ def create_histogram_by_salary_range(df: pd.DataFrame) -> html.Div:
             "max-width": "800px",
             "margin": "0 auto",
         },
+        
     )

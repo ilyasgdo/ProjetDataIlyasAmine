@@ -111,7 +111,7 @@ def create_pie_chart_component(app: Dash, data: pd.DataFrame) -> html.Div:
             values=values,
             names=list(revenue_categories.keys()),
             title=f"Répartition des revenus pour {selected_city.title()}",
-            color_discrete_sequence=px.colors.sequential.Tealgrn,
+            color_discrete_sequence=px.colors.sequential.Electric_r,
         )
 
         # Mise en forme du graphique

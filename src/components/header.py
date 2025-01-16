@@ -3,10 +3,10 @@ import dash_bootstrap_components as dbc
 
 def create_header() -> html.Header:
     """
-    Crée un en-tête stylisé pour l'application avec Dash Bootstrap Components.
+    Crée un en-tête stylisé pour l'application avec Dash Bootstrap Components
 
     Returns:
-        html.Header: Un en-tête HTML stylisé contenant le titre de l'application.
+        html.Header: Un en-tête HTML stylisé contenant le titre de l'application
     """
     return html.Header(
         dbc.Container(
@@ -15,10 +15,10 @@ def create_header() -> html.Header:
                 dbc.Row(
                     dbc.Col(
                         html.H1(
-                            "Visualisation des Salaires Médians et Indice de Gini - Île-de-France",
+                            "Visualisation des Divers revenues en  Île-de-France",
                             className="text-center my-4 text-primary",
                         ),
-                        width={"size": 8, "offset": 2},  # Centrer le texte dans une colonne
+                        width={"size": 8, "offset": 2},  
                     ),
                 ),
                 dbc.Row(
@@ -31,6 +31,6 @@ def create_header() -> html.Header:
                     ),
                 ),
             ],
-            className="bg-light p-4 shadow-sm",  # Fond clair avec une ombre subtile
+            className="bg-light p-4 shadow-sm", 
         )
     )
