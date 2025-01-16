@@ -5,13 +5,13 @@ from dash import dcc,html
 def generate_heatmap_revenu_non_salarie(df: pd.DataFrame) -> html.Div:
     """
     Génère une carte de chaleur montrant les parts de revenus des activités non salariées 
-    et des autres revenus par rapport au salaire médian.
+    et des autres revenus par rapport au salaire médian
 
     Args:
-        df (pd.DataFrame): Le DataFrame contenant les données.
+        df (pd.DataFrame): Le DataFrame contenant les données
 
     Returns:
-        html.Div: Le composant Dash contenant la carte de chaleur.
+        html.Div: Le composant Dash contenant la carte de chaleur
     """
     fig = px.density_heatmap(
         df,

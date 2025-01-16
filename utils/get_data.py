@@ -19,14 +19,14 @@ os.makedirs(DESTINATION_DIRECTORY, exist_ok=True)
 
 def download_data(url: str, destination_file: str) -> bool:
     """
-    Télécharge les données depuis une URL vers un fichier local.
+    Télécharge les données depuis une URL vers un fichier local
 
     Args:
-        url (str): URL du fichier à télécharger.
-        destination_file (str): Chemin complet du fichier de destination.
+        url (str): URL du fichier à télécharger
+        destination_file (str): Chemin complet du fichier de destination
 
     Returns:
-        bool: True si le téléchargement a réussi, False sinon.
+        bool: True si le téléchargement a réussi, False sinon
     """
     try:
         response = requests.get(url, stream=True)
@@ -47,31 +47,31 @@ def download_data(url: str, destination_file: str) -> bool:
 
 def is_file_valid(file_path: str) -> bool:
     """
-    Vérifie si un fichier existe et n'est pas vide.
+    Vérifie si un fichier existe et n'est pas vide
 
     Args:
-        file_path (str): Chemin du fichier à vérifier.
+        file_path (str): Chemin du fichier à vérifier
 
     Returns:
-        bool: True si le fichier existe et n'est pas vide, False sinon.
+        bool: True si le fichier existe et n'est pas vide, False sinon
     """
     return os.path.isfile(file_path) and os.path.getsize(file_path) > 0
 
 
 def download_all_data() -> None:
     """
-    Télécharge tous les fichiers de données si ils n'existent pas déjà localement ou s'ils sont vides.
+    Télécharge tous les fichiers de données si ils n'existent pas déjà localement ou s'ils sont vides
     """
     # Télécharger les fichiers uniquement s'ils n'existent pas ou sont vides
     if not is_file_valid(DESTINATION_FILE_SALAIRE):
-        print("Téléchargement du fichier des salaires...")
+        print("Téléchargementsalaires...")
         if not download_data(URL_SALAIRE, DESTINATION_FILE_SALAIRE):
-            print("Échec du téléchargement du fichier des salaires.")
+            print("Échec du téléchargement salaires")
 
     if not is_file_valid(DESTINATION_FILE_COMMUNES_ILE_DE_FRANCE):
-        print("Téléchargement du fichier des communes d'Île-de-France...")
+        print("Téléchargement communes d'Île-de-France...")
         if not download_data(URL_COMMUNES_ILE_DE_FRANCE, DESTINATION_FILE_COMMUNES_ILE_DE_FRANCE):
-            print("Échec du téléchargement du fichier des communes d'Île-de-France.")
+            print("Échec du téléchargement communes d'Île-de-France")
 
 
 if __name__ == "__main__":

@@ -23,7 +23,7 @@ def create_pie_chart_component(app: Dash, data: pd.DataFrame) -> html.Div:
     # Liste des villes disponibles
     villes = sorted(data["LIBCOM_normalized"].unique())
 
-    # Définir une ville par défaut
+    # ville par défaut
     ville_par_defaut = "bussy-saint-georges"
 
     if ville_par_defaut not in villes:
@@ -102,16 +102,16 @@ def create_pie_chart_component(app: Dash, data: pd.DataFrame) -> html.Div:
 
         if values.isnull().any():
             return html.Div(
-                "Les données pour cette ville sont incomplètes.",
+                "Les données pour cette ville sont incompltes.",
                 className="text-center text-danger mt-3",
             )
 
-        # Créer le graphique avec Plotly
+        # Créer le graphique 
         fig = px.pie(
             values=values,
             names=list(revenue_categories.keys()),
             title=f"Répartition des revenus pour {selected_city.title()}",
-            color_discrete_sequence=px.colors.sequential.Electric_r,
+            color_discrete_sequence=px.colors.sequential.Agsunset_r,
         )
 
         # Mise en forme du graphique

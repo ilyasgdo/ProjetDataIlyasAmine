@@ -1,4 +1,3 @@
-"""Module pour la visualisation des salaires médians et de l'indice de Gini."""
 
 from dash import html, dcc
 import plotly.express as px
@@ -21,7 +20,7 @@ villes_idf = villes_idf_df.iloc[:, 0].apply(normalize_name).tolist()
 # Charger le fichier des statistiques à partir d'Excel
 df_salaire = pd.read_excel(CLEANED_DATA_PATH_SALAIRE)
 
-# Ajouter une colonne normalisée pour la comparaison
+# Ajouter une colonne normalise pour la comparaison
 df_salaire["LIBCOM_normalized"] = df_salaire["LIBCOM"].apply(normalize_name)
 
 # Filtrer les lignes où la colonne normalisée est dans la liste des villes d'Île-de-France
@@ -36,13 +35,13 @@ villes = df_filtre_idf["LIBCOM"].unique()
 
 def create_graph_layout(df_filtre: pd.DataFrame) -> html.Div:
     """
-    Crée la mise en page avec le Dropdown et le graphique.
+    Crée la mise en page avec le Dropdown et le graphique
 
     Args:
-        df_filtre (pd.DataFrame): DataFrame contenant les données filtrées.
+        df_filtre (pd.DataFrame): DataFrame contenant les données filtrées
 
     Returns:
-        html.Div: Un composant Dash contenant le titre, le dropdown et le graphique.
+        html.Div: Un composant Dash contenant le titre, le dropdown et le graphique
     """
     villes = df_filtre["LIBCOM"].unique()
     return dbc.Container(
@@ -68,7 +67,7 @@ def create_graph_layout(df_filtre: pd.DataFrame) -> html.Div:
                     dcc.Dropdown(
                         id="ville-selector",
                         options=[{"label": ville, "value": ville} for ville in sorted(villes)],
-                        value=villes[0],  # Valeur par défaut (première ville de la liste)
+                        value=villes[0],  
                         placeholder="Choisissez une ville",
                         className="mb-4",
                     ),
@@ -96,13 +95,13 @@ def create_graph_layout(df_filtre: pd.DataFrame) -> html.Div:
 
 def update_graph(selected_ville: str) -> Tuple[px.bar, html.Div]:
     """
-    Met à jour le graphique et les informations associées à la ville sélectionnée.
+    Met à jour le graphique et les informations associées à la ville sélectionnée
 
     Args:
-        selected_ville (str): La ville sélectionnée dans le dropdown.
+        selected_ville (str): La ville sélectionnée dans le dropdown
 
     Returns:
-        Tuple[px.bar, html.Div]: Un tuple contenant la figure Plotly et les informations textuelles.
+        Tuple[px.bar, html.Div]: Un tuple contenant la figure  et les informations 
     """
     # Filtrer les données pour la ville sélectionnée
     filtered_df = df_filtre_idf[df_filtre_idf["LIBCOM"] == selected_ville]
@@ -110,7 +109,6 @@ def update_graph(selected_ville: str) -> Tuple[px.bar, html.Div]:
     # Trier les données par salaire médian de manière décroissante
     filtered_df = filtered_df.sort_values(by="DEC_MED18", ascending=False)
 
-    # Ajouter une colonne texte pour afficher les parts sur chaque barre
     filtered_df["text_info"] = (
         "Part chômage: "
         + filtered_df["DEC_PCHO18"].astype(str)
@@ -128,7 +126,6 @@ def update_graph(selected_ville: str) -> Tuple[px.bar, html.Div]:
     iris_gini = filtered_df.loc[filtered_df["DEC_GI18"].idxmax(), "LIBIRIS"]
     iris_retraites = filtered_df.loc[filtered_df["DEC_PPEN18"].idxmax(), "LIBIRIS"]
 
-    # Créer le texte explicatif
     iris_info = html.Div(
         children=[
             html.P(f"IRIS avec le taux de chômage le plus élevé : {iris_chomage}"),

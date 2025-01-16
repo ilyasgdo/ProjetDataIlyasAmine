@@ -3,12 +3,11 @@ import dash_bootstrap_components as dbc
 
 def create_navbar() -> dbc.Navbar:
     """
-    Crée une barre de navigation stylisée avec Bootstrap pour l'application.
+    Crée une barre de navigation  avec Bootstrap 
 
     Returns:
-        dbc.Navbar: Une barre de navigation réactive et élégante.
+        dbc.Navbar: Une barre de navigation 
     """
-    # Élément de navigation
     navbar = dbc.Navbar(
         color="primary",
         dark=True,

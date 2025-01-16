@@ -3,10 +3,10 @@ import dash_bootstrap_components as dbc
 
 def create_footer() -> html.Footer:
     """
-    Crée un pied de page stylisé pour l'application avec Dash Bootstrap Components.
+    Crée un pied de page avec Dash Bootstrap Components
 
     Returns:
-        html.Footer: Un pied de page HTML contenant des informations de copyright.
+        html.Footer: Un pied de page HTML 
     """
     return html.Footer(
         dbc.Container(
@@ -18,10 +18,10 @@ def create_footer() -> html.Footer:
                             "© 2025 Ilyas Amine ",
                             className="text-center text-muted my-3",
                         ),
-                        width=12,  # S'étend sur toute la largeur
+                        width=12,  
                     ),
                 ),
             ],
-            className="bg-dark text-light py-3 shadow-lg",  # Fond sombre avec du texte clair et une ombre
+            className="bg-dark text-light py-3 shadow-lg", 
         )
     )

@@ -28,7 +28,6 @@ def create_histogram_by_salary_range(df: pd.DataFrame) -> html.Div:
     # Comptage du nombre de villes dans chaque intervalle
     salary_counts = df["salary_range"].value_counts().sort_index()
 
-    # Création de l'histogramme avec Plotly
     fig = go.Figure(
         data=[
             go.Bar(
@@ -63,7 +62,6 @@ def create_histogram_by_salary_range(df: pd.DataFrame) -> html.Div:
         margin=dict(l=40, r=40, t=60, b=40),
     )
 
-    # Composant HTML contenant le graphique
     return html.Div(
         children=[
             html.H3(

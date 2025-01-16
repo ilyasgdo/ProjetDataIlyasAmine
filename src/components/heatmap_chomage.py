@@ -4,13 +4,13 @@ from dash import dcc,html
 
 def generate_heatmap_chomage(df: pd.DataFrame) -> html.Div:
     """
-    Génère une carte de chaleur montrant la part des indemnités de chômage par rapport au salaire médian.
+    Génère une carte de chaleur montrant la part des indemnités de chômage par rapport au salaire médian
 
     Args:
-        df (pd.DataFrame): Le DataFrame contenant les données.
+        df (pd.DataFrame): Le DataFrame contenant les données
 
     Returns:
-        html.Div: Le composant Dash contenant la carte de chaleur.
+        html.Div: Le composant Dash contenant la carte de chaleur
     """
     fig = px.density_heatmap(
         df,
