@@ -6,7 +6,7 @@ def create_footer() -> html.Footer:
     Crée un pied de page avec Dash Bootstrap Components
 
     Returns:
-        html.Footer: Un pied de page HTML 
+        html.Footer: Un footer HTML 
     """
     return html.Footer(
         dbc.Container(

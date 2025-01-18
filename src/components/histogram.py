@@ -5,10 +5,20 @@ from dash import html, dcc
 
 
 def create_histogram(df: pd.DataFrame)->html.Div:
+    """
+    Génére un histograme
+
+    Args:
+        df (pd.DataFrame): les données à traité
+
+    Returns:
+        html.Div: l'histogram et les textes explicatifs
+    """
+
     fig = px.histogram(
         df,
         x="DEC_MED18",
-        title="Nombre de Villes par Intervalle de Salaires Médians en IDF tranche 10000",
+        title="Nombre de Villes par Intervalle de Salaires Médians en IDF tranche de 10000",
         labels={"DEC_MED18": "Salaire Médian (€)"},
         nbins=30,
     )
@@ -37,11 +47,11 @@ def create_histogram(df: pd.DataFrame)->html.Div:
         margin=dict(l=40, r=40, t=60, b=40),
     )
 
-    # Composant HTML contenant le graphique
+    # composant HTML contenant le graphique et du texte explicatif
     return html.Div(
         children=[
             html.H3(
-                "Nombre de Villes par Intervalle de Salaires Médians en IDF tranche de 10K",
+                "Nombre de Villes par Intervalle de Salaires Médians en IDF tranche de 10000€ ",
                 style={
                     "text-align": "center",
                     "color": "#2c3e50",

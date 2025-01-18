@@ -3,34 +3,33 @@ import pandas as pd
 import plotly.express as px
 from dash import Dash, dcc, html
 from dash.dependencies import Input, Output
-from typing import Optional
+from typing import Optional, Dict, Any
 
-# Définir les chemins des fichiers
 GEOJSON_PATH: str = "data/geojson/communesiledefrance.geojson"
 
-def load_geojson(file_path: str) -> dict:
+def load_geojson(file_path: str) -> Dict[str, Any]:
     """
-    Charge un fichier GeoJSON à partir du chemin donné.
+    Charge un fichier GeoJSON à partir du chemin donné
 
     Args:
-        file_path (str): Chemin du fichier GeoJSON.
+        file_path (str): Chemin du fichier GeoJSON
 
     Returns:
-        dict: Données GeoJSON chargées.
+        dict: Données GeoJSON chargées
     """
     with open(file_path, "r", encoding="utf-8") as file:
         return json.load(file)
 
-def create_dataframe_from_geojson(geojson_data: dict) -> pd.DataFrame:
+def create_dataframe_from_geojson(geojson_data: Dict[str, Any]) -> pd.DataFrame:
     """
     Extrait les propriétés des communes depuis les données GeoJSON 
-    et les transforme en DataFrame.
+    et les transforme en DataFrame
 
     Args:
-        geojson_data (dict): Données GeoJSON.
+        geojson_data (dict): Données GeoJSON
 
     Returns:
-        pd.DataFrame: DataFrame contenant les informations des communes.
+        pd.DataFrame: DataFrame contenant les informations des communes
     """
     return pd.DataFrame([
         {
@@ -42,17 +41,17 @@ def create_dataframe_from_geojson(geojson_data: dict) -> pd.DataFrame:
         for feature in geojson_data.get("features", [])
     ])
 
-def create_map_component(app: Dash, geojson_data: dict, df_data: pd.DataFrame) -> html.Div:
+def create_map_component(app: Dash, geojson_data: Dict[str, Any], df_data: pd.DataFrame) -> html.Div:
     """
-    Crée une section de mise en page contenant la carte interactive.
+    Crée une section de mise en page contenant la carte dynamique
 
     Args:
-        app (Dash): Instance de l'application Dash.
-        geojson_data (dict): Données GeoJSON utilisées pour la carte.
-        df_data (pd.DataFrame): Données des communes.
+        app (Dash): l'application Dash
+        geojson_data (dict): Données GeoJSON utilisées pour la carte
+        df_data (pd.DataFrame): Données des communes
 
     Returns:
-        html.Div: Mise en page HTML contenant la carte interactive.
+        html.Div: Mise en page HTML contenant la carte dynamique
     """
     layout = html.Div(
         children=[
@@ -87,30 +86,38 @@ def create_map_component(app: Dash, geojson_data: dict, df_data: pd.DataFrame) -
                 ],
                 style={"marginBottom": "20px"}
             ),
+            html.Div(
+                id="map-description",
+                children=[
+                    html.H3(id="map-title", className="text-center"),
+                    html.P(id="map-text", className="text-center")
+                ],
+                style={"marginBottom": "20px"}
+            ),
             dcc.Graph(id="map-graph", style={"height": "75vh"}),
         ],
         style={"padding": "20px", "backgroundColor": "#ffffff", "borderRadius": "10px"}
     )
 
     @app.callback(
-        Output("map-graph", "figure"),
+        [Output("map-graph", "figure"), Output("map-title", "children"), Output("map-text", "children")],
         [Input("metric-selector", "value"), Input("departement-filter", "value")]
     )
-    def update_map(selected_metric: str, departements: Optional[list[str]]) -> px.choropleth_mapbox:
+    def update_map(selected_metric: str, departements: Optional[list[str]]) -> tuple[px.choropleth_mapbox, str, str]:
         """
-        Met à jour la carte interactive en fonction de la métrique et des départements sélectionnés.
+        Met à jour la carte interactive, le titre et le texte explicatif en fonction de la métrique et des départements sélectionnés
 
         Args:
-            selected_metric (str): Métrique sélectionnée ("Mediane" ou "Indice").
-            departements (Optional[list[str]]): Liste des départements sélectionnés.
+            selected_metric (str): Métrique sélectionnée ("Mediane" ou "Indice")
+            departements (Optional[list[str]]): Liste des départements sélectionnés
 
         Returns:
-            px.choropleth_mapbox: Carte interactive mise à jour.
+            tuple: La carte interactive mise à jour, le titre et le texte explicatif
         """
-        # Filtrer les données
+        # filtrer les data
         filtered_data = df_data[df_data["codeDepartement"].isin(departements)] if departements else df_data
 
-        # Créer la carte
+        # créer la carte
         fig = px.choropleth_mapbox(
             filtered_data,
             geojson=geojson_data,
@@ -123,26 +130,27 @@ def create_map_component(app: Dash, geojson_data: dict, df_data: pd.DataFrame) -
             hover_name="nom"
         )
 
-        # Configurer les détails de la carte
+        # configurer les détails de la carte
         fig.update_layout(
             margin={"r": 0, "t": 0, "l": 0, "b": 0},
             coloraxis_colorbar={"title": "Valeur"}
         )
-        return fig
+
+        # définir le titre et le texte explicatif en fonction de la métrique (gini ou median)
+        if selected_metric == "Mediane":
+            title = "Carte des salaires médians en Île-de-France"
+            text = (
+                "Le salaire médian est la valeur qui sépare la population en deux parts égales : "
+                "50 % des personnes gagnent moins que ce montant et 50 % gagnent plus. "
+                "Il est un indicateur clé pour comprendre les inégalités de revenus."
+            )
+        else:
+            title = "Carte des indices de Gini en Île-de-France"
+            text = (
+                "L'indice de Gini mesure les inégalités de revenus au sein d'une population. "
+                "Un indice de 0 représente une égalité parfaite, tandis qu'un indice de 1 représente une inégalité totale."
+            )
+
+        return fig, title, text
 
     return layout
-
-def main() -> None:
-    """
-    Point d'entrée principal de l'application Dash.
-    """
-    app = Dash(__name__)
-
-    geojson_data = load_geojson(GEOJSON_PATH)
-    df_data = create_dataframe_from_geojson(geojson_data)
-    app.layout = create_map_component(app, geojson_data, df_data)
-
-    app.run_server(debug=True)
-
-if __name__ == "__main__":
-    main()

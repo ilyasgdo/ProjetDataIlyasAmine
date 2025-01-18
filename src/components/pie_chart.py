@@ -8,19 +8,19 @@ from dash import Dash
 def create_pie_chart_component(app: Dash, data: pd.DataFrame) -> html.Div:
     """
     Crée un composant Dash contenant un sélecteur de ville et un diagramme circulaire
-    affichant la répartition des sources de revenus pour une ville donnée.
+    affichant la répartition des sources de revenus pour une ville donnée
 
     Args:
-        app (Dash): L'application Dash pour les callbacks.
-        data (pd.DataFrame): Données filtrées contenant les informations des villes.
+        app (Dash): L'application Dash pour les callbacks
+        data (pd.DataFrame): Données filtrées contenant les informations des villes
 
     Returns:
-        html.Div: Un composant contenant un sélecteur de ville et un graphique interactif.
+        html.Div: Un composant contenant sélecteur de ville et un graphique interactif
     """
-    # Normaliser les noms des villes pour éviter les erreurs
+    # normaliser les noms des villes pour éviter les erreurs
     data["LIBCOM_normalized"] = data["LIBCOM"].str.lower()
 
-    # Liste des villes disponibles
+    # liste des villes disponibles
     villes = sorted(data["LIBCOM_normalized"].unique())
 
     # ville par défaut
@@ -29,7 +29,7 @@ def create_pie_chart_component(app: Dash, data: pd.DataFrame) -> html.Div:
     if ville_par_defaut not in villes:
         raise ValueError(f"La ville par défaut '{ville_par_defaut}' n'existe pas dans les données.")
 
-    # Mise en page du composant
+    # mise en page du composant
     layout = dbc.Container(
         fluid=True,
         children=[
@@ -66,7 +66,7 @@ def create_pie_chart_component(app: Dash, data: pd.DataFrame) -> html.Div:
         ],
     )
 
-    # Callback pour mettre à jour le graphique
+    # callback pour mettre à jour le graphique
     @app.callback(
         Output("pie-chart-container", "children"),
         [Input("ville-selector2", "value")],
@@ -79,7 +79,7 @@ def create_pie_chart_component(app: Dash, data: pd.DataFrame) -> html.Div:
                 className="text-center text-danger mt-3",
             )
 
-        # Filtrer les données pour la ville sélectionnée
+        # filtrer les données pour la ville sélectionnée
         city_data = data[data["LIBCOM_normalized"] == selected_city]
 
         if city_data.empty:
@@ -88,7 +88,7 @@ def create_pie_chart_component(app: Dash, data: pd.DataFrame) -> html.Div:
                 className="text-center text-warning mt-3",
             )
 
-        # Définir les catégories et les colonnes correspondantes
+        # définir les catégories et les colonnes 
         revenue_categories = {
             "Salaires et traitements": "DEC_PTSA18",
             "Indemnités de chômage": "DEC_PCHO18",
@@ -97,7 +97,7 @@ def create_pie_chart_component(app: Dash, data: pd.DataFrame) -> html.Div:
             "Autres revenus": "DEC_PAUT18",
         }
 
-        # Extraire les données de la ville pour les catégories
+        # extraire les données de la ville pour les catégories
         values = city_data[list(revenue_categories.values())].iloc[0]
 
         if values.isnull().any():
@@ -106,7 +106,7 @@ def create_pie_chart_component(app: Dash, data: pd.DataFrame) -> html.Div:
                 className="text-center text-danger mt-3",
             )
 
-        # Créer le graphique 
+        # créer le graphique 
         fig = px.pie(
             values=values,
             names=list(revenue_categories.keys()),
@@ -114,7 +114,7 @@ def create_pie_chart_component(app: Dash, data: pd.DataFrame) -> html.Div:
             color_discrete_sequence=px.colors.sequential.Agsunset_r,
         )
 
-        # Mise en forme du graphique
+        # mise en forme du graphique
         fig.update_layout(
             title_font=dict(size=20, family="Arial, sans-serif", color="#2c3e50"),
             margin=dict(l=20, r=20, t=50, b=20),

@@ -15,7 +15,7 @@ def create_header() -> html.Header:
                 dbc.Row(
                     dbc.Col(
                         html.H1(
-                            "Visualisation des Divers revenues en  Île-de-France",
+                            "Visualisation des Divers revenues en  Île-de-France (2018)",
                             className="text-center my-4 text-primary",
                         ),
                         width={"size": 8, "offset": 2},  
@@ -24,7 +24,7 @@ def create_header() -> html.Header:
                 dbc.Row(
                     dbc.Col(
                         html.P(
-                            "Une application pour explorer les inégalités et les salaires médians par commune.",
+                            "Une application crée par Ilyas GHANDAOUI et Amine Ladel pour explorer les inégalités et les salaires médians par commune.",
                             className="text-center text-muted mb-0",
                         ),
                         width={"size": 8, "offset": 2},

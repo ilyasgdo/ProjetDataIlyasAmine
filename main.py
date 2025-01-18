@@ -4,7 +4,7 @@ import dash_bootstrap_components as dbc
 import pandas as pd
 import os
 
-# Import des composants existants
+# import des composants existants
 from src.components.median_salary_by_city import create_graph_layout, update_graph
 from src.components.header import create_header
 from src.components.footer import create_footer
@@ -15,22 +15,25 @@ from src.components.heatmap_revenu_non_activite import generate_heatmap_revenu_n
 from src.components.heatmap_retraite import generate_heatmap_retraite
 from src.components.pie_chart import create_pie_chart_component
 from src.components.map import create_map_component, load_geojson, create_dataframe_from_geojson
+from src.components.explanations import create_explanations_component
+from src.components.project_explanation import create_project_explanation_component
 
-# Import des utilitaires
+
+# import des utilitaires
 from utils.get_data import download_all_data
 from utils.clean_data import clean_all_raw_files
 from utils.normalise_name import normalize_name
 
-# Chemins vers les fichiers
+# chemins vers les fichiers
 CLEANED_DATA_PATH_SALAIRE: str = os.path.join("data", "cleaned", "cleanedsalaire.xlsx")
 CLEANED_DATA_PATH_COMMUNES_IDF: str = os.path.join("data", "cleaned", "cleanedcommunesiledefrance.xlsx")
 GEOJSON_PATH: str = os.path.join("data", "geojson", "communesiledefrance.geojson")
 
-# Télécharger et nettoyer les fichiers
+# télécharger et nettoyer les fichiers
 download_all_data()
 clean_all_raw_files()
 
-# Charger les données
+# charger les données
 villes_idf_df = pd.read_excel(CLEANED_DATA_PATH_COMMUNES_IDF)
 villes_idf = villes_idf_df.iloc[:, 0].apply(normalize_name).tolist()
 
@@ -39,14 +42,14 @@ df_salaire["LIBCOM_normalized"] = df_salaire["LIBCOM"].apply(normalize_name)
 df_filtre_IDF = df_salaire[df_salaire["LIBCOM_normalized"].isin(villes_idf)].sort_values(by="LIBCOM")
 df_filtre_IDF = df_filtre_IDF.drop(columns=["LIBCOM_normalized"])
 
-# Charger les données GeoJSON et créer le DataFrame associé
+# charger les données GeoJSON et créer le DataFrame associé
 geojson_data = load_geojson(GEOJSON_PATH)
 df_data = create_dataframe_from_geojson(geojson_data)
 
-# Initialiser l'application Dash
+# initialiser l'application Dash
 app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 
-# Construire la mise en page
+# construire la mise en page
 app.layout = dbc.Container(
     fluid=True,
     children=[
@@ -54,6 +57,8 @@ app.layout = dbc.Container(
         dbc.Container(
             fluid=False,
             children=[
+                create_project_explanation_component(),  # Ajout du composant explicatif
+                create_explanations_component(), 
                 create_pie_chart_component(app, df_filtre_IDF),
                 dbc.Row(
                     [
@@ -94,20 +99,20 @@ app.layout = dbc.Container(
     style={"fontFamily": "Arial, sans-serif", "paddingTop": "20px"},
 )
 
-# Callback principal
+# callback principal pour mettre à jour le graphique
 @app.callback(
     [Output("salaire-gini-graph", "figure"), Output("iris-info", "children")],
     [Input("ville-selector", "value")],
 )
 def update_callback(ville: Optional[str]) -> tuple:
     """
-    Met à jour le graphique et les informations textuelles en fonction de la ville sélectionnée.
+    Met à jour le graphique et les informations textuelles en fonction de la ville sélectionnée
 
     Args:
-        ville (Optional[str]): La ville sélectionnée dans le menu déroulant.
+        ville (Optional[str]): La ville sélectionnée dans le menu déroulant
 
     Returns:
-        tuple: Le graphique mis à jour et les informations textuelles.
+        tuple: Le graphique mis à jour et les informations textuelles
     """
     return update_graph(ville)
 

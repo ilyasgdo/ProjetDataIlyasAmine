@@ -19,7 +19,7 @@ def generate_heatmap_revenu_non_salarie(df: pd.DataFrame) -> html.Div:
         y="DEC_PAUT18",
         z="DEC_PCHO18",
         color_continuous_scale="Cividis",
-        title="Carte de chaleur : Revenus non liés à l'activité et autres par rapport au salaire médian",
+        title="",
         labels={
             "DEC_MED18": "Salaire Médian (€)",
             "DEC_PAUT18": "Part des autres revenus (%)",
@@ -30,7 +30,7 @@ def generate_heatmap_revenu_non_salarie(df: pd.DataFrame) -> html.Div:
     return html.Div(
         children=[
             html.H3(
-                "Carte des revenus non liée à l'actvité",
+                "Carte de chaleur : Revenus non liés à l'activité et autres par rapport au salaire médian",
                 style={
                     "text-align": "center",
                     "color": "#2c3e50",

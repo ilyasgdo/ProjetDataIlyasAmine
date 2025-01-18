@@ -13,23 +13,23 @@ CLEANED_DATA_PATH_COMMUNES_IDF = os.path.join(
     "data", "cleaned", "cleanedcommunesiledefrance.xlsx"
 )
 
-# Charger la liste des villes à partir du fichier Excel
+# charger la liste des villes à partir du fichier Excel
 villes_idf_df = pd.read_excel(CLEANED_DATA_PATH_COMMUNES_IDF)
 villes_idf = villes_idf_df.iloc[:, 0].apply(normalize_name).tolist()
 
-# Charger le fichier des statistiques à partir d'Excel
+# charger le fichier des statistiques à partir d'Excel
 df_salaire = pd.read_excel(CLEANED_DATA_PATH_SALAIRE)
 
-# Ajouter une colonne normalise pour la comparaison
+# ajouter une colonne normalise pour la comparaison
 df_salaire["LIBCOM_normalized"] = df_salaire["LIBCOM"].apply(normalize_name)
 
-# Filtrer les lignes où la colonne normalisée est dans la liste des villes d'Île-de-France
+# filtrer les lignes où la colonne  est dans la liste des villes d'Île-de-France
 df_filtre_idf = df_salaire[df_salaire["LIBCOM_normalized"].isin(villes_idf)]
 
-# Trier les résultats par la colonne d'origine 'LIBCOM'
+# trier les résultats par la colonne d'origine LIBCOM
 df_filtre_idf = df_filtre_idf.sort_values(by="LIBCOM")
 
-# Liste unique des villes disponibles dans la colonne LIBCOM
+# liste unique des villes disponibles dans la colonne LIBCOM
 villes = df_filtre_idf["LIBCOM"].unique()
 
 
@@ -103,10 +103,10 @@ def update_graph(selected_ville: str) -> Tuple[px.bar, html.Div]:
     Returns:
         Tuple[px.bar, html.Div]: Un tuple contenant la figure  et les informations 
     """
-    # Filtrer les données pour la ville sélectionnée
+    # filtrer les données pour la ville sélectionnée
     filtered_df = df_filtre_idf[df_filtre_idf["LIBCOM"] == selected_ville]
 
-    # Trier les données par salaire médian de manière décroissante
+    # trier les données par salaire médian de manière décroissante
     filtered_df = filtered_df.sort_values(by="DEC_MED18", ascending=False)
 
     filtered_df["text_info"] = (
@@ -121,7 +121,7 @@ def update_graph(selected_ville: str) -> Tuple[px.bar, html.Div]:
         + "%<br>"
     )
 
-    # Identifier les IRIS pour chaque critère
+    # trouver les IRIS pour chaque critère
     iris_chomage = filtered_df.loc[filtered_df["DEC_PCHO18"].idxmax(), "LIBIRIS"]
     iris_gini = filtered_df.loc[filtered_df["DEC_GI18"].idxmax(), "LIBIRIS"]
     iris_retraites = filtered_df.loc[filtered_df["DEC_PPEN18"].idxmax(), "LIBIRIS"]
